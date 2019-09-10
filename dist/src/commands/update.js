@@ -34,6 +34,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __values = (this && this.__values) || function (o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var ora = require("ora");
 var fs = require("fs");
@@ -43,27 +53,54 @@ var parser_1 = require("../lib/parser");
 var serializer_1 = require("../lib/serializer");
 function update(pofile, src, lang, ttagOverrideOpts) {
     return __awaiter(this, void 0, void 0, function () {
-        var progress, pot, _a, po, resultPo, err_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var progress, pot, _a, po, resultPo, ctxs, _loop_1, ctxs_1, ctxs_1_1, ctx, err_1;
+        var e_1, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     progress = ora("[ttag] updating " + pofile + " ...");
                     progress.start();
-                    _b.label = 1;
+                    _c.label = 1;
                 case 1:
-                    _b.trys.push([1, 3, , 4]);
+                    _c.trys.push([1, 3, , 4]);
                     _a = parser_1.parse;
                     return [4 /*yield*/, extract_1.extractAll(src, lang, progress, ttagOverrideOpts)];
                 case 2:
-                    pot = _a.apply(void 0, [_b.sent()]);
+                    pot = _a.apply(void 0, [_c.sent()]);
                     po = parser_1.parse(fs.readFileSync(pofile).toString());
                     console.log(pot, po);
                     resultPo = update_1.updatePo(pot, po);
+                    // sort by message id if enabled
+                    if (ttagOverrideOpts && ttagOverrideOpts.sortByMsgid) {
+                        ctxs = Object.keys(resultPo.translations);
+                        _loop_1 = function (ctx) {
+                            var oldPoEntries = resultPo.translations[ctx];
+                            var newPoEntries = {};
+                            var keys = Object.keys(oldPoEntries).sort();
+                            keys.forEach(function (k) {
+                                newPoEntries[k] = oldPoEntries[k];
+                            });
+                            resultPo.translations[ctx] = newPoEntries;
+                        };
+                        try {
+                            for (ctxs_1 = __values(ctxs), ctxs_1_1 = ctxs_1.next(); !ctxs_1_1.done; ctxs_1_1 = ctxs_1.next()) {
+                                ctx = ctxs_1_1.value;
+                                _loop_1(ctx);
+                            }
+                        }
+                        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                        finally {
+                            try {
+                                if (ctxs_1_1 && !ctxs_1_1.done && (_b = ctxs_1.return)) _b.call(ctxs_1);
+                            }
+                            finally { if (e_1) throw e_1.error; }
+                        }
+                    }
                     fs.writeFileSync(pofile, serializer_1.serialize(resultPo));
                     progress.succeed(pofile + " updated");
                     return [3 /*break*/, 4];
                 case 3:
-                    err_1 = _b.sent();
+                    err_1 = _c.sent();
                     progress.fail("Failed to update. " + err_1.message + ". " + err_1.stack);
                     process.exit(1);
                     return [3 /*break*/, 4];
