@@ -11,8 +11,8 @@ var __values = (this && this.__values) || function (o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var merge_1 = require("./merge");
-var utils_1 = require("./utils");
-function updateMessages(potMessages, poMessages, pluralsNum) {
+// import { getPluralFormsNumber } from "./utils";
+function updateMessages(potMessages, poMessages) {
     var e_1, _a, e_2, _b;
     var updated = {};
     try {
@@ -35,7 +35,7 @@ function updateMessages(potMessages, poMessages, pluralsNum) {
             var msgid = _f.value;
             if (!poMessages[msgid]) {
                 updated[msgid] = potMessages[msgid];
-                updated[msgid].msgstr = new Array(pluralsNum).fill("");
+                // updated[msgid].msgstr = new Array(pluralsNum).fill("");
             }
             else {
                 updated[msgid] = merge_1.mergeMessage(poMessages[msgid], potMessages[msgid]);
@@ -52,13 +52,13 @@ function updateMessages(potMessages, poMessages, pluralsNum) {
     }
     return updated;
 }
-function updateTranslations(pot, po, pluralsNum) {
+function updateTranslations(pot, po) {
     var e_3, _a;
     var updated = {};
     try {
         for (var _b = __values(Object.keys(pot)), _c = _b.next(); !_c.done; _c = _b.next()) {
             var ctx = _c.value;
-            updated[ctx] = updateMessages(pot[ctx] || {}, po[ctx] || {}, pluralsNum);
+            updated[ctx] = updateMessages(pot[ctx] || {}, po[ctx] || {});
         }
     }
     catch (e_3_1) { e_3 = { error: e_3_1 }; }
@@ -71,10 +71,10 @@ function updateTranslations(pot, po, pluralsNum) {
     return updated;
 }
 function updatePo(pot, po) {
-    var pluralsNum = utils_1.getPluralFormsNumber(po.headers["plural-forms"]);
+    // const pluralsNum = getPluralFormsNumber(po.headers["plural-forms"]);
     return {
         headers: po.headers,
-        translations: updateTranslations(pot.translations, po.translations, pluralsNum),
+        translations: updateTranslations(pot.translations, po.translations),
         charset: po.charset
     };
 }
