@@ -53,7 +53,7 @@ var parser_1 = require("../lib/parser");
 var serializer_1 = require("../lib/serializer");
 function update(pofile, src, lang, ttagOverrideOpts) {
     return __awaiter(this, void 0, void 0, function () {
-        var progress, po, _a, pot, resultPo, ctxs, _loop_1, ctxs_1, ctxs_1_1, ctx, err_1;
+        var progress, pot, _a, po, resultPo, ctxs, _loop_1, ctxs_1, ctxs_1_1, ctx, err_1;
         var e_1, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
@@ -66,8 +66,8 @@ function update(pofile, src, lang, ttagOverrideOpts) {
                     _a = parser_1.parse;
                     return [4 /*yield*/, extract_1.extractAll(src, lang, progress, ttagOverrideOpts)];
                 case 2:
-                    po = _a.apply(void 0, [_c.sent()]);
-                    pot = parser_1.parse(fs.readFileSync(pofile).toString());
+                    pot = _a.apply(void 0, [_c.sent()]);
+                    po = parser_1.parse(fs.readFileSync(pofile).toString());
                     resultPo = update_1.updatePo(pot, po);
                     // sort by message id if enabled
                     if (ttagOverrideOpts && ttagOverrideOpts.sortByMsgid) {

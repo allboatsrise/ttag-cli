@@ -11,16 +11,14 @@ var __values = (this && this.__values) || function (o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var merge_1 = require("./merge");
-// import { getPluralFormsNumber } from "./utils";
-function updateMessages(potMessages, poMessages) {
+var utils_1 = require("./utils");
+function updateMessages(potMessages, poMessages, pluralsNum) {
     var e_1, _a, e_2, _b;
     var updated = {};
     try {
         for (var _c = __values(Object.keys(poMessages)), _d = _c.next(); !_d.done; _d = _c.next()) {
             var msgid = _d.value;
-            if (potMessages[msgid] !== undefined) {
-                updated[msgid] = poMessages[msgid];
-            }
+            updated[msgid] = poMessages[msgid];
         }
     }
     catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -35,7 +33,7 @@ function updateMessages(potMessages, poMessages) {
             var msgid = _f.value;
             if (!poMessages[msgid]) {
                 updated[msgid] = potMessages[msgid];
-                // updated[msgid].msgstr = new Array(pluralsNum).fill("");
+                updated[msgid].msgstr = new Array(pluralsNum).fill("");
             }
             else {
                 updated[msgid] = merge_1.mergeMessage(poMessages[msgid], potMessages[msgid]);
@@ -52,13 +50,13 @@ function updateMessages(potMessages, poMessages) {
     }
     return updated;
 }
-function updateTranslations(pot, po) {
+function updateTranslations(pot, po, pluralsNum) {
     var e_3, _a;
     var updated = {};
     try {
         for (var _b = __values(Object.keys(pot)), _c = _b.next(); !_c.done; _c = _b.next()) {
             var ctx = _c.value;
-            updated[ctx] = updateMessages(pot[ctx] || {}, po[ctx] || {});
+            updated[ctx] = updateMessages(pot[ctx] || {}, po[ctx] || {}, pluralsNum);
         }
     }
     catch (e_3_1) { e_3 = { error: e_3_1 }; }
@@ -71,10 +69,10 @@ function updateTranslations(pot, po) {
     return updated;
 }
 function updatePo(pot, po) {
-    // const pluralsNum = getPluralFormsNumber(po.headers["plural-forms"]);
+    var pluralsNum = utils_1.getPluralFormsNumber(po.headers["plural-forms"]);
     return {
         headers: po.headers,
-        translations: updateTranslations(pot.translations, po.translations),
+        translations: updateTranslations(pot.translations, po.translations, pluralsNum),
         charset: po.charset
     };
 }
