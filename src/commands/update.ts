@@ -15,11 +15,13 @@ async function update(
     const progress: ttagTypes.Progress = ora(`[ttag] updating ${pofile} ...`);
     progress.start();
     try {
-        const pot = parse(
+        const po = parse(
             await extractAll(src, lang, progress, ttagOverrideOpts)
         );
-        const po = parse(fs.readFileSync(pofile).toString());
-        console.log(pot, po);
+        const pot = parse(fs.readFileSync(pofile).toString());
+
+        //console.log(pot, po);
+
         const resultPo = updatePo(pot, po);
 
         // sort by message id if enabled
