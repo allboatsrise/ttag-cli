@@ -15,10 +15,10 @@ async function update(
     const progress: ttagTypes.Progress = ora(`[ttag] updating ${pofile} ...`);
     progress.start();
     try {
-        const po = parse(
+        const pot = parse(
             await extractAll(src, lang, progress, ttagOverrideOpts)
         );
-        const pot = parse(fs.readFileSync(pofile).toString());
+        const po = parse(fs.readFileSync(pofile).toString());
 
         //console.log(pot, po);
 

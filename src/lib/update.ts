@@ -1,23 +1,21 @@
 import { PoData, Messages, Translations } from "./parser";
 import { mergeMessage } from "./merge";
-// import { getPluralFormsNumber } from "./utils";
+import { getPluralFormsNumber } from "./utils";
 
 function updateMessages(
     potMessages: Messages,
-    poMessages: Messages
-    // pluralsNum: number
+    poMessages: Messages,
+    pluralsNum: number
 ): Messages {
     const updated: Messages = {};
     for (const msgid of Object.keys(poMessages)) {
-        if (potMessages[msgid] !== undefined) {
-            updated[msgid] = poMessages[msgid];
-        }
+        updated[msgid] = poMessages[msgid];
     }
 
     for (const msgid of Object.keys(potMessages)) {
         if (!poMessages[msgid]) {
             updated[msgid] = potMessages[msgid];
-            // updated[msgid].msgstr = new Array(pluralsNum).fill("");
+            updated[msgid].msgstr = new Array(pluralsNum).fill("");
         } else {
             updated[msgid] = mergeMessage(
                 poMessages[msgid],
@@ -31,28 +29,28 @@ function updateMessages(
 
 function updateTranslations(
     pot: Translations,
-    po: Translations
-    // pluralsNum: number
+    po: Translations,
+    pluralsNum: number
 ): Translations {
     const updated: Translations = {};
     for (const ctx of Object.keys(pot)) {
         updated[ctx] = updateMessages(
             pot[ctx] || {},
-            po[ctx] || {}
-            // pluralsNum
+            po[ctx] || {},
+            pluralsNum
         );
     }
     return updated;
 }
 
 export function updatePo(pot: PoData, po: PoData): PoData {
-    // const pluralsNum = getPluralFormsNumber(po.headers["plural-forms"]);
+    const pluralsNum = getPluralFormsNumber(po.headers["plural-forms"]);
     return {
         headers: po.headers,
         translations: updateTranslations(
             pot.translations,
-            po.translations
-            // pluralsNum
+            po.translations,
+            pluralsNum
         ),
         charset: po.charset
     };
